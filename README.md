@@ -1,6 +1,6 @@
 # Goodyear
 
-TODO: Write a gem description
+Adds ActiveRecord-like query interface to Tire.
 
 ## Installation
 
@@ -18,7 +18,61 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Query Builder
+
+#### where()
+
+```ruby
+SomeModel.where( published: true, topic: "goats").first()
+```
+
+#### sort()
+
+Orders results by field
+
+```ruby
+SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first()
+```
+
+#### fields()
+
+Specify fields to include in results
+
+```ruby
+SomeModel.where( published: true, name: "Candy").fields(:published, :name, :score).first()
+```
+
+#### first()
+
+Sets size to 1 and fetches the results. Returns `SomeModel`
+
+```ruby
+SomeModel.where( published: true, name: "Candy").first()
+```
+
+#### fetch()
+
+Exectues the query and returns `TireCollection`
+
+```ruby
+SomeModel.where( published: true).size(100).sort(:score, :desc).fetch()
+```
+
+### Scopes
+
+Add chainable scopes just like you do in ActiveRecord. 
+
+```ruby
+class SomeModel < Tire
+...
+  scope :published, -> { where published: true }
+end
+```
+
+### Facets
+
+Coming soon.
+
 
 ## Contributing
 
