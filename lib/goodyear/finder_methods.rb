@@ -1,7 +1,6 @@
 module Goodyear
   module FinderMethods
     def where(*query)
-      @_and ||= []
       serialize_arguments(query)
       return self
     end
@@ -22,18 +21,28 @@ module Goodyear
       @_sort = sort_order
       return self
     end
+
     def first
       self.size(1) #maybe more performant?
       self.fetch.first
     end
 
-    private 
+    protected
+    def add_query_segment
+      @query_segments ||= []
+      @query_segments << @_and
+      @_and = []
+    end
+
+    private
     def serialize_arguments(q)
+      @_and ||= []
       q.each do |arg|
         arg.each_pair { |k,v|  @_and << "#{k}:#{v}" } if arg.class == Hash
         @_and << arg if arg.class == String
       end
     end
+
 
   end
 end

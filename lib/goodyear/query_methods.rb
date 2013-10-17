@@ -1,11 +1,13 @@
 require 'goodyear/query'
 require 'goodyear/finder_methods'
 require 'goodyear/facet_methods'
+require 'goodyear/boolean_methods'
 
 module Goodyear
   module QueryMethods
 
     include Goodyear::FinderMethods
+    include Goodyear::BooleanMethods
     include Goodyear::FacetMethods
 
     def fetch
@@ -46,10 +48,12 @@ module Goodyear
       @_and    = []
       @_size   = []
       @_or     = []
+      @query_segments = []
     end
 
     def construct_query
-      @_query = @_and.join(" AND ")
+      @query_segments << @_and
+      @_query = @query_segments.collect{ |segment| segment.join(" AND ") }.join(" OR ")
     end
 
   end
