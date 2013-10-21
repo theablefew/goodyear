@@ -52,6 +52,7 @@ module Goodyear
     end
 
     def construct_query
+      @query_segments ||= []
       @query_segments << @_and
       @_query = @query_segments.collect{ |segment| segment.join(" AND ") }.join(" OR ")
     end
