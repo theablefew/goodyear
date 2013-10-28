@@ -22,5 +22,9 @@ module Goodyear
     def sort
       @sort
     end
+
+    def cache_key
+      Digest::SHA256.new.hexdigest("#{query}#{fields}#{sort}#{size}")
+    end
   end
 end

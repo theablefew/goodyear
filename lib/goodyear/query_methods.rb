@@ -2,6 +2,7 @@ require 'goodyear/query'
 require 'goodyear/finder_methods'
 require 'goodyear/facet_methods'
 require 'goodyear/boolean_methods'
+require 'goodyear/query_cache'
 
 module Goodyear
   module QueryMethods
@@ -9,18 +10,21 @@ module Goodyear
     include Goodyear::FinderMethods
     include Goodyear::BooleanMethods
     include Goodyear::FacetMethods
+    include Goodyear::QueryCache
 
     def fetch
       es = self.perform
-      self.search do |s|
-        s.query do |q|
-          q.string es.query
-        end
+      cache_query(es.cache_key) {
+        tire = Tire::Search::Search.new(self.index_name, wrapper: self)
+        tire.query { string es.query }
+        tire.sort{ by *es.sort } unless es.sort.nil?
+        tire.size es.size unless es.size.nil?
+        tire.fields es.fields unless es.fields.empty?
 
-        s.sort{ by *es.sort } unless es.sort.nil?
-        s.size es.size unless es.size.nil?
-        s.fields es.fields unless es.fields.empty?
-      end
+        ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
+          tire.results
+        end
+      }
     end
 
     def perform
