@@ -29,7 +29,7 @@ module Goodyear
 
     def perform
       construct_query
-      esq = Query.new(@_query, @_fields, @_size, @_sort) and clean
+      esq = Query.new(@_query, @_fields, @_size, @_sort)
       return esq
     end
 
@@ -58,7 +58,8 @@ module Goodyear
     def construct_query
       @query_segments ||= []
       @query_segments << @_and
-      @_query = @query_segments.collect{ |segment| segment.join(" AND ") }.join(" OR ")
+      @_query = @query_segments.collect{ |segment| segment.uniq.join(" AND ") }.join(" OR ")
+      clean
     end
 
   end
