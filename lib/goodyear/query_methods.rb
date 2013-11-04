@@ -18,8 +18,8 @@ module Goodyear
         tire = Tire::Search::Search.new(self.index_name, wrapper: self)
         tire.query { string es.query } unless es.query.blank?
         tire.sort{ by *es.sort } unless es.sort.nil?
-        tire.size es.size unless es.size.nil?
-        tire.fields es.fields unless es.fields.empty?
+        tire.size( es.size ) unless es.size.nil?
+        tire.fields( es.fields ) unless es.fields.empty?
 
         ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
           tire.results
@@ -30,6 +30,7 @@ module Goodyear
     def perform
       construct_query
       esq = Query.new(@_query, @_fields, @_size, @_sort)
+      clean
       return esq
     end
 
@@ -47,10 +48,10 @@ module Goodyear
 
     private
 
-    def clean 
+    def clean
       @_fields = []
       @_and    = []
-      @_size   = []
+      @_size   =  nil
       @_or     = []
       @query_segments = []
     end
@@ -62,7 +63,6 @@ module Goodyear
         next if segment.nil?
         segment.uniq.join(" AND ")
       end.join(" OR ")
-      clean
     end
 
   end

@@ -12,7 +12,6 @@ module Goodyear
     end
 
     def size(size)
-      @_size ||= []
       @_size = size
       return self
     end
