@@ -16,7 +16,7 @@ module Goodyear
       es = self.perform
       cache_query(es.cache_key) {
         tire = Tire::Search::Search.new(self.index_name, wrapper: self)
-        tire.query { string es.query }
+        tire.query { string es.query } unless es.query.blank?
         tire.sort{ by *es.sort } unless es.sort.nil?
         tire.size es.size unless es.size.nil?
         tire.fields es.fields unless es.fields.empty?
@@ -58,7 +58,10 @@ module Goodyear
     def construct_query
       @query_segments ||= []
       @query_segments << @_and
-      @_query = @query_segments.collect{ |segment| segment.uniq.join(" AND ") }.join(" OR ")
+      @_query = @query_segments.collect do |segment| 
+        next if segment.nil?
+        segment.uniq.join(" AND ")
+      end.join(" OR ")
       clean
     end
 
