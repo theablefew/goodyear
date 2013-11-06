@@ -20,10 +20,19 @@ module Goodyear
       @_sort = sort_order
       return self
     end
+    alias :order :sort
 
     def first
       self.size(1) #maybe more performant?
       self.fetch.first
+    end
+
+    #def last
+      #self.size(1).sort(created_at: :desc)
+    #end
+
+    def all
+      self.size(9999).fetch
     end
 
     protected

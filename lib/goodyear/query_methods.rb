@@ -15,14 +15,14 @@ module Goodyear
     def fetch
       es = self.perform
       cache_query(es.cache_key) {
-        tire = Tire::Search::Search.new(self.index_name, wrapper: self)
+        tire = Tire::Search::Search.new(self.index_name, wrapper: self, type: document_type)
         tire.query { string es.query } unless es.query.blank?
         tire.sort{ by *es.sort } unless es.sort.nil?
         tire.size( es.size ) unless es.size.nil?
         tire.fields( es.fields ) unless es.fields.empty?
 
         ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
-          tire.results
+          tire.version(true).results
         end
       }
     end
