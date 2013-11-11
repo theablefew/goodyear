@@ -7,12 +7,12 @@ module Goodyear
 
     def cache_query(query)
       result =
-        if store.exist? query and Rails.application.config.goodyear_perform_caching
+        if store.exist? query && Rails.application.config.goodyear_perform_caching
           ActiveSupport::Notifications.instrument "cache.query.elasticsearch", name: self.name
           store.fetch query
         else
           res = yield
-          store.write(query, res)
+          store.write(query, res) if Rails.application.config.goodyear_perform_caching
           res
         end
       result.dup
