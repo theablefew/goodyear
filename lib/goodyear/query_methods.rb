@@ -15,11 +15,16 @@ module Goodyear
     def fetch
       es = self.perform
       cache_query(es.cache_key) {
-        tire = Tire::Search::Search.new(self.index_name, wrapper: self, type: document_type)
+        search_options = {wrapper: self, type: document_type}
+        search_options.merge( :routing => @_goodyear_routing) unless @_goodyear_routing.nil?
+        tire = Tire::Search::Search.new(self.index_name, search_options)
         tire.query { string es.query } unless es.query.blank?
         tire.sort{ by *es.sort } unless es.sort.nil?
         tire.size( es.size ) unless es.size.nil?
         tire.fields( es.fields ) unless es.fields.empty?
+        es.facets.each do |f|
+          tire.facet(f[:name], f[:args], &f[:l] )
+        end
 
         ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
           tire.version(true).results
@@ -29,9 +34,14 @@ module Goodyear
 
     def perform
       construct_query
-      esq = Query.new(@_query, @_fields, @_size, @_sort)
+      esq = Query.new(@_query, @_fields, @_size, @_sort, @_facets)
       clean
       return esq
+    end
+
+    def routing(val)
+      @_goodyear_routing = val
+      self
     end
 
     def scope(name, scope_options = {})
@@ -53,6 +63,7 @@ module Goodyear
       @_and    = []
       @_size   =  nil
       @_or     = []
+      @_facets = []
       @query_segments = []
     end
 
