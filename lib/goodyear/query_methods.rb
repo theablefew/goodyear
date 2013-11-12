@@ -15,9 +15,10 @@ module Goodyear
     def fetch
       es = self.perform
       cache_query(es.cache_key) {
-        search_options = {wrapper: self, type: document_type}
-        search_options.merge( :routing => @_goodyear_routing) unless @_goodyear_routing.nil?
-        tire = Tire::Search::Search.new(self.index_name, search_options)
+        options = {wrapper: self, type: document_type}
+        options.merge!( @_search_options ) unless @_search_options.nil?
+
+        tire = Tire::Search::Search.new(self.index_name, options)
         tire.query { string es.query } unless es.query.blank?
         tire.sort{ by *es.sort } unless es.sort.nil?
         tire.size( es.size ) unless es.size.nil?
@@ -39,8 +40,8 @@ module Goodyear
       return esq
     end
 
-    def routing(val)
-      @_goodyear_routing = val
+    def search_options(*options)
+      @_search_options = Hash.new(*options)
       self
     end
 
