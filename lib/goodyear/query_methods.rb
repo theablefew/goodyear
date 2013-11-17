@@ -16,7 +16,6 @@ module Goodyear
       es = self.perform
       cache_query(es.cache_key) {
         options = {wrapper: self, type: document_type}
-        puts "Search: #{@_search_options}".color :red
         options.merge!( @_search_options ) unless @_search_options.nil?
 
         tire = Tire::Search::Search.new(self.index_name, options)
