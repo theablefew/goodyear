@@ -3,14 +3,15 @@ require 'goodyear/finder_methods'
 require 'goodyear/facet_methods'
 require 'goodyear/boolean_methods'
 require 'goodyear/query_cache'
+require 'goodyear/enumerable'
 
 module Goodyear
   module QueryMethods
-
     include Goodyear::FinderMethods
     include Goodyear::BooleanMethods
     include Goodyear::FacetMethods
     include Goodyear::QueryCache
+    include Goodyear::Enumerable
 
     def fetch
       es = self.perform
@@ -23,6 +24,8 @@ module Goodyear
         tire.sort{ by *es.sort } unless es.sort.nil?
         tire.size( es.size ) unless es.size.nil?
         tire.fields( es.fields ) unless es.fields.empty?
+        tire.highlight( es.highlights ) unless es.highlights.empty?
+
         es.facets.each do |f|
           tire.facet(f[:name], f[:args], &f[:l] )
         end
@@ -35,7 +38,7 @@ module Goodyear
 
     def perform
       construct_query
-      esq = Query.new(@_query, @_fields, @_size, @_sort, @_facets)
+      esq = Query.new(@_query, @_fields, @_size, @_sort, @_highlights, @_facets)
       clean
       return esq
     end

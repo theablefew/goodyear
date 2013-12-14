@@ -1,10 +1,11 @@
 module Goodyear
   class Query
-    def initialize(q,f,s, sort, facets)
+    def initialize(q,f,s, sort, highlights, facets)
       @q = q || []
       @f = f || []
       @s = s || []
       @sort = sort
+      @highlights = highlights
       @facets = facets
     end
 
@@ -18,6 +19,10 @@ module Goodyear
 
     def fields
       @f
+    end
+
+    def highlights
+      @highlights
     end
 
     def size

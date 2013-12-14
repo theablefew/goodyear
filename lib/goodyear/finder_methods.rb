@@ -22,6 +22,11 @@ module Goodyear
     end
     alias :order :sort
 
+    def highlight(fields)
+      @_highlights = fields
+      return self
+    end
+
     def first
       self.size(1) #maybe more performant?
       self.fetch.first
