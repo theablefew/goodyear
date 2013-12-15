@@ -5,7 +5,7 @@ module Goodyear
       @f = f || []
       @s = s || []
       @sort = sort
-      @highlights = highlights
+      @highlights = highlights || []
       @facets = facets
     end
 
