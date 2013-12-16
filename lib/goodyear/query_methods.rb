@@ -11,7 +11,6 @@ module Goodyear
     include Goodyear::BooleanMethods
     include Goodyear::FacetMethods
     include Goodyear::QueryCache
-    include Goodyear::Enumerable
 
     def fetch
       es = self.perform
@@ -68,6 +67,7 @@ module Goodyear
       @_size   =  nil
       @_or     = []
       @_facets = []
+      @_highlights = []
       @query_segments = []
     end
 
