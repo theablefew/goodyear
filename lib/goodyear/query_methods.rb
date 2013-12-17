@@ -20,10 +20,10 @@ module Goodyear
 
         tire = Tire::Search::Search.new(self.index_name, options)
         tire.query { string es.query } unless es.query.blank?
-        tire.sort{ by *es.sort } unless es.sort.empty?
+        tire.sort{ by *es.sort } unless es.sort.nil? || es.sort.empty?
         tire.size( es.size ) unless es.size.nil?
-        tire.fields( es.fields ) unless es.fields.empty?
-        tire.highlight( es.highlights ) unless es.highlights.empty?
+        tire.fields( es.fields ) unless es.sort.nil? || es.fields.empty?
+        tire.highlight( es.highlights ) unless es.sort.nil? || es.highlights.empty?
 
         es.facets.each do |f|
           tire.facet(f[:name], f[:args], &f[:l] )
