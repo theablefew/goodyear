@@ -4,7 +4,7 @@ module Goodyear
       @q = q || []
       @f = f || []
       @s = s || []
-      @sort = sort
+      @sort = sort || []
       @highlights = highlights || []
       @facets = facets
     end
