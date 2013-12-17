@@ -1,6 +1,7 @@
 require 'goodyear/railtie' if defined?(Rails)
 require "goodyear/version"
 require "goodyear/query_methods"
+require 'goodyear/persistence'
 
 module Goodyear
   module ElasticQuery
