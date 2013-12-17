@@ -17,7 +17,7 @@ module Goodyear
     end
 
     def sort(*sort_order)
-      @_sort = sort_order
+      @_sort = sort_order.compact
       return self
     end
     alias :order :sort

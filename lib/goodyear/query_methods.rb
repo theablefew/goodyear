@@ -20,7 +20,7 @@ module Goodyear
 
         tire = Tire::Search::Search.new(self.index_name, options)
         tire.query { string es.query } unless es.query.blank?
-        tire.sort{ by *es.sort } unless es.sort.nil?
+        tire.sort{ by *es.sort } unless es.sort.empty?
         tire.size( es.size ) unless es.size.nil?
         tire.fields( es.fields ) unless es.fields.empty?
         tire.highlight( es.highlights ) unless es.highlights.empty?
