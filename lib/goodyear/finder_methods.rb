@@ -33,7 +33,7 @@ module Goodyear
     end
 
     def last
-      self.size(1).sort(created_at: :desc).fetch.last
+      self.size(1).fetch.results.last
     end
 
     def all

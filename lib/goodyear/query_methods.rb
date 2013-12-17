@@ -4,6 +4,7 @@ require 'goodyear/facet_methods'
 require 'goodyear/boolean_methods'
 require 'goodyear/query_cache'
 require 'goodyear/enumerable'
+require 'goodyear/persistence'
 
 module Goodyear
   module QueryMethods
@@ -11,6 +12,7 @@ module Goodyear
     include Goodyear::BooleanMethods
     include Goodyear::FacetMethods
     include Goodyear::QueryCache
+    include Goodyear::Persistence
 
     def fetch
       es = self.perform
