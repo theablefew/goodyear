@@ -18,12 +18,31 @@ Or install it yourself as:
 
 ## Usage
 
+
+```ruby
+    class SomeModel < Tire
+        include Goodyear::ElasticQuery
+    end
+```
+
+#### Better persistence via dynamic attributes. 
+
+Including `Goodyear::Persistence` in your model means you don't have to worry about defining everything with Tire's `#property` method. 
+
+```ruby
+    class SomeModel < Tire
+        include Goodyear::ElasticQuery
+        include Goodyear::Persistence
+    end
+```
+
+
 ### Query Builder
 
 #### where()
 
 ```ruby
-SomeModel.where( published: true, topic: "goats").first()
+SomeModel.where( published: true, topic: "goats").first
 ```
 
 #### sort()
@@ -31,7 +50,7 @@ SomeModel.where( published: true, topic: "goats").first()
 Orders results by field
 
 ```ruby
-SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first()
+SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first
 ```
 
 #### fields()
@@ -39,23 +58,32 @@ SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first()
 Specify fields to include in results
 
 ```ruby
-SomeModel.where( published: true, name: "Candy").fields(:published, :name, :score).first()
+SomeModel.where( published: true, name: "Candy").fields(:published, :name, :score).first
 ```
 
 #### first()
 
-Sets size to 1 and fetches the results. Returns `SomeModel`
+Sets size to 1 and fetches the first result. Returns `SomeModel`
 
 ```ruby
-SomeModel.where( published: true, name: "Candy").first()
+SomeModel.where( published: true, name: "Candy").first
 ```
+
+#### last()
+
+Returns the last result
+
+```ruby
+SomeModel.where( published: true).last
+```
+
 
 #### fetch()
 
 Exectues the query and returns `TireCollection`
 
 ```ruby
-SomeModel.where( published: true).size(100).sort(:score, :desc).fetch()
+SomeModel.where( published: true).size(100).sort(:score, :desc).fetch
 ```
 
 ### Scopes
@@ -63,7 +91,11 @@ SomeModel.where( published: true).size(100).sort(:score, :desc).fetch()
 Add chainable scopes just like you do in ActiveRecord. 
 
 ```ruby
-class SomeModel < Tire
+class SomeModel
+  include Tire::Model::Persistence
+  include ActiveRecord::Callbacks
+  include Goodyear::ElasticQuery
+  include Goodyear::Persistence
 ...
   scope :published, -> { where published: true }
 end
@@ -71,7 +103,25 @@ end
 
 ### Facets
 
-Coming soon.
+```ruby
+SomeModel.where(created_at: 1.year.ago).facet('top_users') { terms 'users', size: 50 }.fetch
+```
+
+```ruby
+SomeModel.facet('stats') { date :created_at, interval: "1m", pre_zone_adjust_large_interval: true, time_zone: "-0500"}
+```
+
+### Query Filters
+
+```ruby
+SomeModel.where(width: 10).filter(:range,  {height: { gte: 10, lte: 200} }).first
+```
+
+There's also a convenience method for Exists filters. 
+
+```ruby
+SomeModel.has_field?(:width).fetch
+```
 
 
 ## Contributing
