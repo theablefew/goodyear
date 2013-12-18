@@ -109,13 +109,19 @@ end
 
 ### Facets
 
+Terms facet
 ```ruby
 SomeModel.where(created_at: 1.year.ago).facet('top_users') { terms 'users', size: 50 }
 ```
 
+Or maybe a date histogram facet:
 ```ruby
-SomeModel.facet('stats') { date :created_at, interval: "1m", pre_zone_adjust_large_interval: true, time_zone: "-0500"}
+SomeModel.facet('stats') { date :created_at, interval: "1m", 
+                           pre_zone_adjust_large_interval: true, 
+                           time_zone: "-0500"}
 ```
+
+
 
 ### Query Filters
 
