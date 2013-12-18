@@ -20,9 +20,9 @@ Or install it yourself as:
 
 
 ```ruby
-    class SomeModel < Tire
-        include Goodyear::ElasticQuery
-    end
+class SomeModel < Tire
+    include Goodyear::ElasticQuery
+end
 ```
 
 #### Better persistence via dynamic attributes. 
@@ -30,10 +30,10 @@ Or install it yourself as:
 Including `Goodyear::Persistence` in your model means you don't have to worry about defining everything with Tire's `#property` method. 
 
 ```ruby
-    class SomeModel < Tire
-        include Goodyear::ElasticQuery
-        include Goodyear::Persistence
-    end
+class SomeModel < Tire
+    include Goodyear::ElasticQuery
+    include Goodyear::Persistence
+end
 ```
 
 
@@ -42,7 +42,13 @@ Including `Goodyear::Persistence` in your model means you don't have to worry ab
 #### where()
 
 ```ruby
-SomeModel.where( published: true, topic: "goats").first
+SomeModel.where( published: true, topic: "goats")
+```
+
+#### or()
+
+```ruby
+SomeModel.where(status: 'inactive').or.where( retired: true)
 ```
 
 #### sort()
@@ -50,7 +56,7 @@ SomeModel.where( published: true, topic: "goats").first
 Orders results by field
 
 ```ruby
-SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first
+SomeModel.where( published: true, name: "Candy").sort(:score, :desc)
 ```
 
 #### fields()
@@ -58,7 +64,7 @@ SomeModel.where( published: true, name: "Candy").sort(:score, :desc).first
 Specify fields to include in results
 
 ```ruby
-SomeModel.where( published: true, name: "Candy").fields(:published, :name, :score).first
+SomeModel.where( published: true, name: "Candy").fields(:published, :name, :score)
 ```
 
 #### first()
@@ -83,7 +89,7 @@ SomeModel.where( published: true).last
 Exectues the query and returns `TireCollection`
 
 ```ruby
-SomeModel.where( published: true).size(100).sort(:score, :desc).fetch
+SomeModel.where( published: true).size(100).sort(:score, :desc)
 ```
 
 ### Scopes
@@ -104,7 +110,7 @@ end
 ### Facets
 
 ```ruby
-SomeModel.where(created_at: 1.year.ago).facet('top_users') { terms 'users', size: 50 }.fetch
+SomeModel.where(created_at: 1.year.ago).facet('top_users') { terms 'users', size: 50 }
 ```
 
 ```ruby
@@ -114,13 +120,13 @@ SomeModel.facet('stats') { date :created_at, interval: "1m", pre_zone_adjust_lar
 ### Query Filters
 
 ```ruby
-SomeModel.where(width: 10).filter(:range,  {height: { gte: 10, lte: 200} }).first
+SomeModel.where(width: 10).filter(:range,  {height: { gte: 10, lte: 200} })
 ```
 
 There's also a convenience method for Exists filters. 
 
 ```ruby
-SomeModel.has_field?(:width).fetch
+SomeModel.has_field?(:width).where(width:10)
 ```
 
 
