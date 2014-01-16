@@ -5,7 +5,6 @@ require 'goodyear/filter_methods'
 require 'goodyear/boolean_methods'
 require 'goodyear/query_cache'
 require 'goodyear/enumerable'
-require 'goodyear/persistence'
 
 module Goodyear
   module QueryMethods
@@ -14,13 +13,14 @@ module Goodyear
     include Goodyear::FacetMethods
     include Goodyear::FilterMethods
     include Goodyear::QueryCache
-    include Goodyear::Persistence
 
     def fetch
       es = self.perform
       cache_query(es.cache_key) {
         options = {wrapper: self, type: document_type}
         options.merge!( @_search_options ) unless @_search_options.nil?
+
+        @_search_options = nil
 
         tire = Tire::Search::Search.new(self.index_name, options)
         tire.query { string es.query } unless es.query.blank?
@@ -40,6 +40,7 @@ module Goodyear
         ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
           tire.version(true).results
         end
+
       }
     end
 
@@ -52,6 +53,22 @@ module Goodyear
 
     def search_options(options)
       @_search_options = options
+      self
+    end
+
+    def search_type(type)
+      @_search_options = {}
+      @_search_options.merge! search_type: type
+    end
+
+    def count
+      search_type 'count'
+      fetch.total
+    end
+
+    def routing(r)
+      @_search_options ||= {}
+      @_search_options.merge! routing: r
       self
     end
 
