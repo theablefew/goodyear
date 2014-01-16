@@ -92,6 +92,32 @@ Exectues the query and returns `TireCollection`
 SomeModel.where( published: true).size(100).sort(:score, :desc)
 ```
 
+
+#### routing(id)
+
+Sets routing to id in search options and returns `SomeModel`
+
+```ruby
+SomeModel.routing(10).where( published: true)
+```
+
+#### count
+
+Sets search_type to 'count' in search options, fetches and returns total
+
+```ruby
+SomeModel.where( published: true).count
+```
+
+#### search_options(options = {})
+
+Sets search options. Overwrites previously set values
+
+```ruby
+SomeModel.search_options(routing: 1, search_type: 'count').where( published: true).fetch
+```
+
+
 ### Scopes
 
 Add chainable scopes just like you do in ActiveRecord. 
