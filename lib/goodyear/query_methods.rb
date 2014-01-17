@@ -85,6 +85,10 @@ module Goodyear
 
     alias :to_query :perform
 
+    def reset_query
+      clean
+    end
+
     private
 
     def clean
