@@ -57,7 +57,7 @@ module Goodyear
     end
 
     def search_type(type)
-      @_search_options = {}
+      @_search_options ||= {}
       @_search_options.merge! search_type: type
       self
     end
