@@ -14,7 +14,7 @@ module Goodyear
     end 
 
     ActiveSupport::Notifications.subscribe 'cache.query.elasticsearch' do |name, start, finish, id, payload|
-      Rails.logger.debug(["#{payload[:name]}".bright, "CACHE".color(:magenta).bright ,"(#{time_diff(start,finish)}ms)"].join(" ").color(:yellow))
+      Rails.logger.debug(["#{payload[:name]}".bright, "CACHE".color(:magenta).bright ,"(#{time_diff(start,finish)}ms)", payload[:query].inspect].join(" ").color(:yellow))
     end
 
     initializer 'goodyear.set_defaults' do

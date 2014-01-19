@@ -16,32 +16,28 @@ module Goodyear
 
     def fetch
       es = self.perform
-      cache_query(es.cache_key) {
-        options = {wrapper: self, type: document_type}
-        options.merge!( @_search_options ) unless @_search_options.nil?
+      options = {wrapper: self, type: document_type}
+      options.merge!( @_search_options ) unless @_search_options.nil?
 
-        @_search_options = nil
+      @_search_options = nil
 
-        tire = Tire::Search::Search.new(self.index_name, options)
-        tire.query { string es.query } unless es.query.blank?
-        tire.sort{ by *es.sort } unless es.sort.blank?
-        tire.size( es.size ) unless es.size.nil?
-        tire.fields( es.fields ) unless es.fields.empty?
-        tire.highlight( es.highlights ) unless es.highlights.empty?
+      tire = Tire::Search::Search.new(self.index_name, options)
+      tire.query { string es.query } unless es.query.blank?
+      tire.sort{ by *es.sort } unless es.sort.blank?
+      tire.size( es.size ) unless es.size.nil?
+      tire.fields( es.fields ) unless es.fields.empty?
+      tire.highlight( es.highlights ) unless es.highlights.empty?
 
-        es.filters.each do |f|
-          tire.filter(f[:name], f[:args], &f[:l])
-        end
+      es.filters.each do |f|
+        tire.filter(f[:name], f[:args], &f[:l])
+      end
 
-        es.facets.each do |f|
-          tire.facet(f[:name], f[:args], &f[:l] )
-        end
+      es.facets.each do |f|
+        tire.facet(f[:name], f[:args], &f[:l] )
+      end
 
-        ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: tire.to_curl do
-          tire.version(true).results
-        end
+      cache_query(tire.to_curl) { tire.version(true).results }
 
-      }
     end
 
     def perform

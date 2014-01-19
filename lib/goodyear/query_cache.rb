@@ -6,19 +6,26 @@ module Goodyear
     end
 
     def cache_query(query)
-      result =
-        if store.exist? query && Rails.application.config.goodyear_perform_caching
-          ActiveSupport::Notifications.instrument "cache.query.elasticsearch", name: self.name
-          store.fetch query
+      cache_key = sha(query)
+      result = if store.exist?(cache_key) && Rails.application.config.goodyear_perform_caching
+          ActiveSupport::Notifications.instrument "cache.query.elasticsearch", name: self.name, query: query
+          store.fetch cache_key
         else
-          res = yield
-          store.write(query, res) if Rails.application.config.goodyear_perform_caching
+          res = []
+          ActiveSupport::Notifications.instrument "query.elasticsearch", name: self.name, query: query do
+            res = yield
+          end
+          store.write(cache_key, res) if Rails.application.config.goodyear_perform_caching
           res
         end
       result.dup
     end
 
     private
+
+    def sha(str)
+      Digest::SHA256.new.hexdigest(str)
+    end
 
     def setup_store!
      case Rails.application.config.goodyear_cache_store
