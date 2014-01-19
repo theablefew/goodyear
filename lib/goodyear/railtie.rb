@@ -20,9 +20,8 @@ module Goodyear
     initializer 'goodyear.set_defaults' do
       config.goodyear_cache_store = :redis_store
       config.goodyear_expire_cache_in = 15.minutes
-      config.goodyear_perform_caching = true
+      #config.goodyear_perform_caching = true
     end
 
   end
-
 end

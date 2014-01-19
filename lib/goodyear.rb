@@ -4,6 +4,9 @@ require "goodyear/query_methods"
 require 'goodyear/persistence'
 
 module Goodyear
+  mattr_accessor :force_cache
+  @@force_cache = false
+
   module ElasticQuery
 
       def self.included(base)
@@ -16,10 +19,9 @@ module Goodyear
   end
 
   def self.cache
-    original_cache_value = Rails.application.config.goodyear_perform_caching
-    Rails.application.config.goodyear_perform_caching = true
+    Goodyear.force_cache = true
     lm = yield
-    Rails.application.config.goodyear_perform_caching = original_cache_value
+    Goodyear.force_cache = false
     lm
   end
 end
