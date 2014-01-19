@@ -14,4 +14,12 @@ module Goodyear
         id.gsub('-','\\-')
       end
   end
+
+  def self.cache
+    original_cache_value = Rails.application.config.goodyear_perform_caching
+    Rails.application.config.goodyear_perform_caching = true
+    lm = yield
+    Rails.application.config.goodyear_perform_caching = original_cache_value
+    lm
+  end
 end

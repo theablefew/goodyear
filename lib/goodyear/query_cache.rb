@@ -21,6 +21,7 @@ module Goodyear
       result.dup
     end
 
+
     private
 
     def sha(str)
