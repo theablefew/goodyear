@@ -7,7 +7,6 @@ module Goodyear
 
     def cache_query(query)
       cache_key = sha(query)
-      Rails.logger.info "#{Rails.application.config.goodyear_perform_caching}".color :yellow
       result = if store.exist?(cache_key) && ( Goodyear.force_cache || Rails.application.config.goodyear_perform_caching)
           ActiveSupport::Notifications.instrument "cache.query.elasticsearch", name: self.name, query: query
           store.fetch cache_key
