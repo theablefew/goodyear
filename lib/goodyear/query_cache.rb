@@ -7,6 +7,7 @@ module Goodyear
 
     def cache_query(query)
       cache_key = sha(query)
+      Goodyear.force_cache
       result = if store.exist?(cache_key) && Goodyear.force_cache
           ActiveSupport::Notifications.instrument "cache.query.elasticsearch", name: self.name, query: query
           store.fetch cache_key
