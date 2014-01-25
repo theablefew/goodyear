@@ -10,5 +10,12 @@ module Goodyear
       filter :exists, {field: field}
       return self
     end
+
+    def query_filter(name,  options = {})
+      @_query_filters ||= []
+      @_query_filters << {name: name,  options: options}
+      self
+    end
+
   end
 end

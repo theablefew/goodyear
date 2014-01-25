@@ -1,6 +1,6 @@
 module Goodyear
   class Query
-    def initialize(q,f,s, sort, highlights, facets, filters)
+    def initialize(q,f,s, sort, highlights, facets, filters, query_filters)
       @q = q || []
       @f = f || []
       @s = s || []
@@ -8,6 +8,7 @@ module Goodyear
       @highlights = highlights || []
       @facets = facets
       @filters = filters
+      @query_filters = query_filters || []
     end
 
     def facets
@@ -37,6 +38,14 @@ module Goodyear
     def sort
       @sort
     end
+
+    def query_filters
+     @query_filters
+    end
+
+
+    private
+
 
   end
 end

@@ -22,7 +22,17 @@ module Goodyear
       @_search_options = nil
 
       tire = Tire::Search::Search.new(self.index_name, options)
-      tire.query { string es.query } unless es.query.blank?
+      if es.query_filters.empty?
+        tire.query { string es.query } unless es.query.blank?
+      else
+        tire.query do
+          filtered do
+            query { string es.query } unless es.query.blank?
+            es.query_filters.each { |f| filter(f[:name], f[:options]) }
+          end
+        end
+      end
+
       tire.sort{ by *es.sort } unless es.sort.blank?
       tire.size( es.size ) unless es.size.nil?
       tire.fields( es.fields ) unless es.fields.empty?
@@ -42,7 +52,7 @@ module Goodyear
 
     def perform
       construct_query
-      esq = Query.new(@_query, @_fields, @_size, @_sort, @_highlights, @_facets, @_filters)
+      esq = Query.new(@_query, @_fields, @_size, @_sort, @_highlights, @_facets, @_filters, @_query_filters)
       clean
       return esq
     end
@@ -79,6 +89,10 @@ module Goodyear
       singleton_class.send(:define_method, name, &scope_proc)
     end
 
+    def results
+      fetch.results
+    end
+
     alias :to_query :perform
 
     def reset_query
@@ -97,6 +111,7 @@ module Goodyear
       @_filters = []
       @_highlights = []
       @query_segments = []
+      @_query_filters = nil
     end
 
     def construct_query
