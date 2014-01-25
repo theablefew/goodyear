@@ -73,6 +73,10 @@ module Goodyear
       fetch.total
     end
 
+    def results
+      fetch.results
+    end
+
     def routing(r)
       @_search_options ||= {}
       @_search_options.merge! routing: r
@@ -87,10 +91,6 @@ module Goodyear
       end
 
       singleton_class.send(:define_method, name, &scope_proc)
-    end
-
-    def results
-      fetch.results
     end
 
     alias :to_query :perform
