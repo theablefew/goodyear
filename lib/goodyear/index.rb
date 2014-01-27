@@ -39,7 +39,7 @@ module Tire
         when document.is_a?(Hash)
           document[:_index] || document['_index']
         when document.respond_to?(:_index)
-          document._index
+          document._index rescue nil
       end
 
       return ind if ind.to_s != @name.to_s
