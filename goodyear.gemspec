@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["spencer@theablefew.com"]
   spec.description   = %q{ActiveRecord-like query interface for tire}
   spec.summary       = %q{ActiveRecord-like query interface for tire}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/theablefew/goodyear"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

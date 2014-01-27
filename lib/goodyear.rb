@@ -2,6 +2,7 @@ require 'goodyear/railtie' if defined?(Rails)
 require "goodyear/version"
 require "goodyear/query_methods"
 require 'goodyear/persistence'
+require 'goodyear/index'
 
 module Goodyear
   mattr_accessor :force_cache
@@ -24,5 +25,6 @@ module Goodyear
     Goodyear.force_cache = false
     lm
   end
+
 end
 
