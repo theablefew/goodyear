@@ -3,6 +3,7 @@ require "goodyear/version"
 require "goodyear/query_methods"
 require 'goodyear/persistence'
 require 'goodyear/index'
+require 'goodyear/scan'
 
 module Goodyear
   mattr_accessor :force_cache

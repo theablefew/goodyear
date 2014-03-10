@@ -13,6 +13,7 @@ module Goodyear
     include Goodyear::FacetMethods
     include Goodyear::FilterMethods
     include Goodyear::QueryCache
+    include Goodyear::Enumerable
 
     def fetch
       es = self.perform
