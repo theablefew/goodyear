@@ -2,6 +2,7 @@ require 'goodyear/railtie' if defined?(Rails)
 require "goodyear/version"
 require "goodyear/query_methods"
 require 'goodyear/persistence'
+require 'goodyear/persistence/attributes'
 require 'goodyear/index'
 require 'goodyear/scan'
 
